@@ -3,6 +3,10 @@
             [clojure.java.jdbc :as jdbc]))
 
 
+(defn users []
+  (db-repl/query-pprint "select name,lname,fname,mname,role_id from ruser;"))
+
+
 (defn group
   "Show data about user groups"
   ([group-name]
