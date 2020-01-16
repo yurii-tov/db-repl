@@ -13,7 +13,7 @@
 
 
 (defn schools []
-  (db-repl/query-pprint "select id,installation_id,name,contact_name,contact_email from school;"))
+  (db-repl/query-pprint "select id,registration_id,name,contact_name,contact_email from school;"))
 
 
 (defn school-aggregated-statistic []
@@ -26,19 +26,6 @@
     term_type as type, 
     term_year 
     from school_agregated_statistic;"))
-
-
-(defn school-installation-history []
-  (db-repl/query-pprint
-   "select user_id as uid, 
-    user_name as uname, 
-    school_id, 
-    new_installation_id as new_iid, 
-    old_installation_id as old_iid,
-    comment, 
-    registration_request_status as status, 
-    history_item_date 
-    from school_installation_history;"))
 
 
 (defn rubrics []
@@ -85,6 +72,6 @@
         (jdbc/execute!
          db-repl/*db-spec*
          ["insert into school
-           (id, guid, installation_id, name, contact_name, contact_email) values
+           (id, guid, registration_id, name, contact_name, contact_email) values
            (gen_id(gen_schools, 1), ?, ?, ?, ?, ?);"
           guid installation_id name contact_name contact_email])))))
