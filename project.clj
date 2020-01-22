@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/java.jdbc "0.7.9"]
                  [org.firebirdsql.jdbc/jaybird-jdk17 "2.2.6"]
-                 [com.github.javafaker/javafaker "0.17.2"]]
+                 [com.github.javafaker/javafaker "0.17.2"]
+                 [org.clojure/data.json "0.2.7"]]
   :repl-options {:init-ns db-repl.main})
