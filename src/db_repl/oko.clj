@@ -1,6 +1,7 @@
 (ns db-repl.oko
   (:require [clojure.string :as cstr]
             [clojure.java.io :as io]
+            [clojure.data.json :as json]
             [db-repl.core :as db-repl]
             [clojure.java.jdbc :as jdbc]))
 
@@ -31,6 +32,16 @@
 (defn rubrics []
   (db-repl/query-pprint
    "select r.rubric, s.name as subject from rsubject as s join rsubjectrubrics as r on s.id = r.subjectid;"))
+
+
+;; Working with JSON payload
+
+
+(defn parse-payload
+  "Parse JSON file with OKO payload"
+  [file-path]
+  (with-open [r (io/reader file-path)]
+    (json/read-json r)))
 
 
 ;; Generate testdata
