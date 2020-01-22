@@ -37,11 +37,22 @@
 ;; Working with JSON payload
 
 
-(defn parse-payload
-  "Parse JSON file with OKO payload"
+(defn read-term-json
+  "Read and parse OKO term payload from json file"
   [file-path]
   (with-open [r (io/reader file-path)]
     (json/read-json r)))
+
+
+(defn payload-classes-results
+  "Get flattened list of all classes results"
+  [payload]
+  (->> payload
+       :classesResults
+       :parallelsResults
+       (mapcat (comp vals
+                     :classesResults
+                     second))))
 
 
 ;; Generate testdata
