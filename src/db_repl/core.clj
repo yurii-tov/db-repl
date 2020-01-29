@@ -99,10 +99,14 @@
 
 (defn timestamp-shift-by-days
   "Shift given java.sql.Timestamp by amount of days"
-  [timestamp days]
-  (Timestamp/from
-   (.plus (.toInstant timestamp)
-          (Period/ofDays days))))
+  ([timestamp days]
+   (Timestamp/from
+    (.plus (.toInstant timestamp)
+           (Period/ofDays days))))
+  ([days]
+   (timestamp-shift-by-days
+    (Timestamp/from (Instant/now))
+    days)))
 
 
 ;; =====
