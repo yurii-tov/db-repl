@@ -100,16 +100,14 @@
 
 
 (defn insert-subjects
-  "Insert subjects into db.
-   Argument: hashmap of a shape {guid1 name1,
-                                 guid2 name2,
-                                 ...}"
-  [subjects-map]
+  [subjects-csv]
   (db-repl/with-connection-reuse
-    (doseq [[guid name] subjects-map]
-      (jdbc/execute!
-       db-repl/*db-spec*
-       ["insert into rsubject
+    (with-open [r (io/reader subjects-csv)]
+      (doseq [[guid name] (map (fn [line] (cstr/split line #";"))
+                               (line-seq r))]
+        (jdbc/execute!
+         db-repl/*db-spec*
+         ["insert into rsubject
          (id, name, guid, status) values
          (gen_id(gen_rsubject, 1), ?, ?, ?);"
-        name guid 1]))))
+          name guid 1])))))
