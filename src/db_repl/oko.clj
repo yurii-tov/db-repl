@@ -19,13 +19,13 @@
 
 (defn school-aggregated-statistic []
   (db-repl/query-pprint
-   "select installation_id as iid, 
-    term_name as name, 
-    term_start, 
-    term_finish as finish, 
-    term_num as num, 
-    term_type as type, 
-    term_year 
+   "select installation_id as iid,
+    term_name as name,
+    term_start,
+    term_finish as finish,
+    term_num as num,
+    term_type as type,
+    term_year
     from school_agregated_statistic;"))
 
 
@@ -97,3 +97,19 @@
            (id, guid, registration_id, name, contact_name, contact_email) values
            (gen_id(gen_schools, 1), ?, ?, ?, ?, ?);"
           guid installation_id name contact_name contact_email])))))
+
+
+(defn insert-subjects
+  "Insert subjects into db.
+   Argument: hashmap of a shape {guid1 name1,
+                                 guid2 name2,
+                                 ...}"
+  [subjects-map]
+  (db-repl/with-connection-reuse
+    (doseq [[guid name] subjects-map]
+      (jdbc/execute!
+       db-repl/*db-spec*
+       ["insert into rsubject
+         (id, name, guid, status) values
+         (gen_id(gen_rsubject, 1), ?, ?, ?);"
+        name guid 1]))))
