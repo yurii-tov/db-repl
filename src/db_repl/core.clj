@@ -9,6 +9,7 @@
            (java.time Instant
                       Period)))
 
+
 ;;=====================
 ;; Connection machinery
 ;;=====================
@@ -19,6 +20,7 @@
        (cstr/replace (.getCanonicalPath (io/file path)) "\\" "/")
        "?lc_ctype=UTF8"))
 
+
 (defn make-spec
   "Create new spec hashmap for given file using default user/password"
   [path-to-db]
@@ -26,15 +28,18 @@
    :user "sysdba"
    :password "masterkey"})
 
+
 (def ^:dynamic *db-spec*
   "Global db spec to use implicitly in helper functions"
   (make-spec
    (str (System/getProperty "java.io.tmpdir") "ls.fdb")))
 
+
 (defmacro with-connection-reuse [& body]
   `(jdbc/with-db-connection [~'conn *db-spec*]
      (binding [*db-spec* ~'conn]
        (do ~@body))))
+
 
 ;; ==========
 ;; inspect db
@@ -50,21 +55,23 @@
                (if (vector? q) q (vector q))
                {:keywordize? false})))
 
+
 (defn columns
   "Get list of columns for given table.
-   Arguments: 
+   Arguments:
    table - a lower-case keyword with table name
    Return list of keywords"
   [table]
   (sort (map (comp keyword
                    cstr/lower-case
                    cstr/trim
-                   :rdb$field_name) 
+                   :rdb$field_name)
              (jdbc/query *db-spec*
                          ["select rdb$field_name
                            from rdb$relation_fields
-                           where rdb$relation_name=?;" 
+                           where rdb$relation_name=?;"
                           (cstr/upper-case (name table))]))))
+
 
 (defn tables
   "Get hashmap of all tables + columns"
@@ -72,22 +79,23 @@
   (with-connection-reuse
     (into {}
           (map (fn [record]
-                 (let [name (-> record 
+                 (let [name (-> record
                                 :rdb$relation_name
                                 cstr/trim
                                 cstr/lower-case
                                 keyword)]
-                   (vector name (columns name)))) 
+                   (vector name (columns name))))
                (jdbc/query *db-spec*
-                           ["select rdb$relation_name 
-                             from rdb$relations 
-                             where rdb$view_blr is null 
+                           ["select rdb$relation_name
+                             from rdb$relations
+                             where rdb$view_blr is null
                              and (rdb$system_flag is null or rdb$system_flag = 0);"])))))
+
 
 (defn find-table
   "Get list of tables matching given regexp"
   [re]
-  (sort-by first 
+  (sort-by first
            (filter (comp (partial re-find re) name first)
                    (tables))))
 
