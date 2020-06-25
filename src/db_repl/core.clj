@@ -117,6 +117,14 @@
     days)))
 
 
+(defn execute-sql [sql]
+  "Execute raw chunk of sql, statement by statement (detect ; as separator)"
+  (with-connection-reuse
+    (doseq [line (cstr/split (cstr/replace sql "#;+$" "") #";\s*")]
+      (printf "%s => %s\n"
+              line
+              (jdbc/execute! *db-spec* [line])))))
+
 ;; =====
 ;; utils
 ;; =====
