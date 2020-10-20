@@ -8,4 +8,4 @@
                  [org.firebirdsql.jdbc/jaybird-jdk17 "2.2.6"]
                  [com.github.javafaker/javafaker "0.17.2"]
                  [org.clojure/data.json "0.2.7"]]
-  :repl-options {:init-ns db-repl.main})
+  :repl-options {:init-ns db-repl.core})
