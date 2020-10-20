@@ -35,6 +35,11 @@
    (str (System/getProperty "java.io.tmpdir") "ls.fdb")))
 
 
+(defn set-db-spec! [s]
+  "Mutate global *db-spec* variable to new value"
+  (def ^:dynamic *db-spec* s))
+
+
 (defmacro with-connection-reuse [& body]
   `(jdbc/with-db-connection [~'conn *db-spec*]
      (binding [*db-spec* ~'conn]
