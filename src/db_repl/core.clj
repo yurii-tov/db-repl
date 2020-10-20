@@ -21,7 +21,7 @@
        "?lc_ctype=UTF8"))
 
 
-(defn make-spec
+(defn make-db-spec
   "Create new spec hashmap for given file using default user/password"
   [path-to-db]
   {:connection-uri (path-to-uri path-to-db)
@@ -31,7 +31,7 @@
 
 (def ^:dynamic *db-spec*
   "Global db spec to use implicitly in helper functions"
-  (make-spec
+  (make-db-spec
    (str (System/getProperty "java.io.tmpdir") "ls.fdb")))
 
 
